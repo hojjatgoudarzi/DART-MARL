@@ -1,0 +1,14 @@
+% Descriptive results, one frozen controller; NOT training-seed CIs.
+\begin{tabular}{lrrrrr}\toprule
+Method & Return & Episode SD & $\Delta$ vs Switch & Switches & Post-fault service \\
+\midrule
+Fixed & 582.70 & 83.15 & -195.87 & 0.00 & 0.636 \\
+Greedy & 778.57 & 23.08 & +0.00 & 13.88 & 0.877 \\
+Switch-Aware & 778.57 & 23.08 & +0.00 & 12.62 & 0.877 \\
+Original R-CART & 715.75 & 72.64 & -62.82 & 10.25 & 0.798 \\
+No sync & 778.42 & 23.63 & -0.15 & 10.62 & 0.877 \\
+No switch cost & 678.25 & 80.59 & -100.32 & 13.38 & 0.759 \\
+No hysteresis & 727.15 & 69.43 & -51.42 & 13.62 & 0.812 \\
+Bounded sync & 778.42 & 23.63 & -0.15 & 10.62 & 0.877 \\
+Service-aware & 778.42 & 23.63 & -0.15 & 10.62 & 0.877 \\
+\bottomrule\end{tabular}

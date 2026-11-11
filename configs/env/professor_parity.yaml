@@ -1,0 +1,18 @@
+# Independently authored behavioral reproduction of professor's 4-rover / 2-POI case.
+schema_version: 1
+name: professor_parity
+dimensions: [20, 20]
+horizon: 25
+max_agents: 12
+max_pois: 6
+observation_mode: professor_density
+poi_sensor_temperature: 2.0
+rover_sensor_temperature: 2.0
+rovers:
+  - {start: [10, 10], speed: 1, sensor_radius: 12, sensors: 4}
+  - {start: [10, 10], speed: 1, sensor_radius: 12, sensors: 4}
+  - {start: [10, 10], speed: 1, sensor_radius: 12, sensors: 4}
+  - {start: [10, 10], speed: 1, sensor_radius: 12, sensors: 4}
+pois:
+  - {position: [10, 4], radius: 2, coupling: 2, window: [0, 100], value: 1, repeat: true, objective: 0}
+  - {position: [10, 16], radius: 2, coupling: 2, window: [0, 100], value: 1, repeat: true, objective: 0}

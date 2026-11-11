@@ -1,0 +1,14 @@
+{
+  "status": "verified",
+  "initial_rovers": 12,
+  "reserved_slots": 2,
+  "steps": 120,
+  "recorded_events": 11,
+  "replacements": 2,
+  "reentries": 3,
+  "return_switch_aware": 786.6999999999989,
+  "return_r_cart": 786.6999999999989,
+  "checkpoint_sha256": "0b752e3b71b7f2d095634083ada14af7e7d10478aea68a5fab96765ac5d9e50b",
+  "gif_duration_seconds": 89.47,
+  "note": "No claim that the controller was trained for 12 rovers is made by this verifier; pass a checkpoint actually trained on the 12-rover config."
+}

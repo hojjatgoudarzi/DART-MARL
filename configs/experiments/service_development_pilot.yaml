@@ -1,0 +1,40 @@
+# Exploration-only pilot. Do NOT open the TEST_ONLY schedule.
+schema_version: 1
+name: service_aware_service_aware_ENGINEERING_PILOT
+training_variants:
+  nominal: configs/train/mappo_team_value.yaml
+  fault_robust: configs/train/mappo_fault_robust.yaml
+training_environment: configs/env/dev_roles.yaml
+training_seeds:
+- 4101
+- 4202
+validation_scenarios:
+- configs/env/service_aware_mixed_dev.yaml
+- configs/env/service_aware_staggered_dev.yaml
+test_scenarios:
+- configs/env/service_aware_new_test_only.yaml
+checkpoint_selection:
+  episodes: 4
+  seed: 840000
+  device: cpu
+  criterion: relative_critic_rmse
+allocation:
+  methods:
+  - fixed
+  - greedy
+  - switch_aware
+  - r_cart
+  - r_cart_no_sync
+  - r_cart_bounded_sync
+  - r_cart_no_switch
+  - r_cart_no_hysteresis
+  - r_cart_service
+  episodes: 3
+  development_seed: 1080000
+  test_seed: 2180000
+  forecast_horizon: 24
+  device: auto
+statistics:
+  bootstrap_seed: 271828
+  bootstrap_replicates: 200
+primary_method: r_cart_service

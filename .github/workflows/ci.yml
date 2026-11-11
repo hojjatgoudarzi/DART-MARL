@@ -1,0 +1,38 @@
+name: Test & reproducibility
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  cpu-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install PyTorch CPU
+        run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Install project
+        run: python -m pip install -e '.[dev,plots,demo]'
+      - name: Regression suite
+        run: python -m pytest -q
+      - name: Python compilation
+        run: python -m compileall -q src scripts
+      - name: Simulator smoke test
+        run: python -m dart_marl inspect --config configs/env/dev_roles.yaml
+      - name: Twelve-rover scenario validation
+        run: python -m dart_marl inspect --config configs/env/rover_team_12_showcase.yaml
+      - name: Paper figure regeneration from archived seed-level results
+        run: python scripts/make_paper_assets.py --historical-csv results/heldout_episode_returns.csv --out outputs/ci_paper_figures
+      - name: Verify checked-in trained-model provenance and results
+        run: python scripts/verify_published_results.py
+      - name: Regenerate publication composite figures from recorded data
+        run: python scripts/make_publication_figures.py --source results/team12 --out outputs/ci_publication_figures

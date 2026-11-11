@@ -1,0 +1,16 @@
+% Descriptive: episodes share the SAME trained controller; do not use as training-seed CIs.
+\begin{tabular}{lrrr}
+\toprule
+Method & Mean return & Episode SD & Mean switches \\
+\midrule
+fixed & 582.700 & 77.780 & 0.00 \\
+greedy & 778.575 & 21.589 & 13.88 \\
+switch\_aware & 778.575 & 21.589 & 12.62 \\
+r\_cart & 715.750 & 67.944 & 10.25 \\
+r\_cart\_no\_sync & 778.425 & 22.101 & 10.62 \\
+r\_cart\_no\_switch & 678.250 & 75.383 & 13.38 \\
+r\_cart\_no\_hysteresis & 727.150 & 64.950 & 13.62 \\
+r\_cart\_bounded\_sync & 778.425 & 22.101 & 10.62 \\
+r\_cart\_service & 778.425 & 22.101 & 10.62 \\
+\bottomrule
+\end{tabular}

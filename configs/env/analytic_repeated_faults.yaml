@@ -1,0 +1,103 @@
+# iteration (historical) pre-declared development-only repeated-fault stress test.
+# Same dynamics/tasks as dev_roles for frozen guided checkpoint transfer.
+schema_version: 1
+name: analytic_repeated_faults_dev
+dimensions:
+- 24
+- 24
+horizon: 48
+max_agents: 12
+max_pois: 6
+observation_mode: research
+spawn_jitter: 0.2
+rovers:
+- start:
+  - 11
+  - 12
+  speed: 1
+  sensor_radius: 14
+  sensors: 4
+- start:
+  - 11
+  - 12
+  speed: 1
+  sensor_radius: 14
+  sensors: 4
+- start:
+  - 12
+  - 12
+  speed: 1
+  sensor_radius: 14
+  sensors: 4
+- start:
+  - 12
+  - 12
+  speed: 1
+  sensor_radius: 14
+  sensors: 4
+- start:
+  - 13
+  - 12
+  speed: 1
+  sensor_radius: 14
+  sensors: 4
+- start:
+  - 13
+  - 12
+  speed: 1
+  sensor_radius: 14
+  sensors: 4
+pois:
+- position:
+  - 5
+  - 5
+  radius: 2
+  coupling: 2
+  window:
+  - 0
+  - 47
+  value: 1.2
+  repeat: true
+- position:
+  - 19
+  - 6
+  radius: 2
+  coupling: 2
+  window:
+  - 0
+  - 47
+  value: 1.8
+  repeat: true
+- position:
+  - 12
+  - 20
+  radius: 2
+  coupling: 2
+  window:
+  - 15
+  - 37
+  value: 3.0
+  repeat: false
+events:
+- step: 12
+  kind: permanent_failure
+  rover: 0
+  detection_delay: 2
+- step: 20
+  kind: temporary_disable
+  rover: 3
+  duration: 5
+  detection_delay: 2
+- step: 30
+  kind: replacement_agent
+  rover: 4
+  new_slot: 6
+  spawn:
+  - 12
+  - 12
+  detection_delay: 1
+- step: 39
+  kind: temporary_disable
+  rover: 1
+  duration: 4
+  detection_delay: 1

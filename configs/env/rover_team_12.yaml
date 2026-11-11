@@ -1,0 +1,30 @@
+# Twelve concurrently active rovers plus two RESERVED replacement slots.
+# All six tasks require physical presence; assignment alone never pays reward.
+schema_version: 1
+name: rover_team_12
+max_agents: 14
+max_pois: 6
+dimensions: [40, 40]
+horizon: 120
+observation_mode: research
+spawn_jitter: 0.35
+rovers:
+  - {start: [16, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [17, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [18, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [19, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [20, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [21, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [16, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [17, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [18, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [19, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [20, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [21, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+pois:
+  - {position: [5, 6], radius: 3.0, coupling: 3, value: 2.2, window: [0, 119], repeat: true}
+  - {position: [33, 6], radius: 3.0, coupling: 2, value: 1.8, window: [0, 119], repeat: true}
+  - {position: [7, 33], radius: 3.0, coupling: 2, value: 1.8, window: [0, 119], repeat: true}
+  - {position: [33, 32], radius: 3.0, coupling: 2, value: 2.5, window: [0, 119], repeat: true}
+  - {position: [19, 34], radius: 2.8, coupling: 1, value: 5, window: [25, 98], repeat: false}
+  - {position: [20, 6], radius: 2.8, coupling: 1, value: 4, window: [8, 72], repeat: false}

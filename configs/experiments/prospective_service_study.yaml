@@ -1,0 +1,60 @@
+# iteration (historical) CONFIRMATORY: preregister before training; NEVER simulate TEST_ONLY during development.
+# New method proposed after opening iteration (historical); iteration (historical) results remain final.
+# No CFT methods: earlier seed-specific learned models are not transferable.
+schema_version: 1
+name: service_aware_service_aware_fresh_10_seeds_CONFIRMATORY
+training_variants:
+  nominal: configs/train/mappo_team_value.yaml
+  fault_robust: configs/train/mappo_fault_robust.yaml
+training_environment: configs/env/dev_roles.yaml
+training_seeds:
+- 3101
+- 3202
+- 3303
+- 3404
+- 3505
+- 3606
+- 3707
+- 3808
+- 3909
+- 4010
+validation_scenarios:
+- configs/env/dev_failure.yaml
+- configs/env/analytic_repeated_faults.yaml
+- configs/env/critic_fault_shift_dev.yaml
+- configs/env/service_aware_mixed_dev.yaml
+- configs/env/service_aware_staggered_dev.yaml
+test_scenarios:
+- configs/env/service_aware_new_test_only.yaml
+checkpoint_selection:
+  episodes: 4
+  seed: 840000
+  device: cpu
+  criterion: relative_critic_rmse
+allocation:
+  methods:
+  - fixed
+  - greedy
+  - switch_aware
+  - r_cart
+  - r_cart_no_sync
+  - r_cart_bounded_sync
+  - r_cart_no_switch
+  - r_cart_no_hysteresis
+  - r_cart_service
+  episodes: 8
+  development_seed: 1080000
+  test_seed: 2180000
+  forecast_horizon: 24
+  device: auto
+statistics:
+  bootstrap_seed: 271828
+  bootstrap_replicates: 4000
+primary_method: r_cart_service
+confirmatory:
+  primary_variant: fault_robust
+  primary_scenario: configs/env/service_aware_new_test_only.yaml
+  primary_method: r_cart_service
+  baseline_method: switch_aware
+  primary_metric: mean_return
+  minimum_training_seeds: 10

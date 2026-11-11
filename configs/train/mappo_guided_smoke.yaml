@@ -1,0 +1,26 @@
+schema_version: 1
+env_config: configs/env/dev_roles.yaml
+seed: 42
+device: cpu
+num_envs: 2
+rollout_steps: 12
+total_env_steps: 48
+hidden_size: 32
+role_mode: initial_coupling
+role_guidance_gain: 2.0
+shaping_coef: 0.0
+eval_episodes: 2
+eval_every: 1
+save_every: 1
+torch_threads: 2
+ppo:
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_epsilon: 0.2
+  learning_rate: 0.0003
+  ppo_epochs: 1
+  num_minibatches: 1
+  entropy_coef: 0.01
+  value_coef: 0.5
+  max_grad_norm: 0.5
+  value_clip: null

@@ -1,0 +1,40 @@
+# Twelve concurrently active rovers plus two RESERVED replacement slots.
+# All six tasks require physical presence; assignment alone never pays reward.
+schema_version: 1
+name: rover_team_12_showcase
+max_agents: 14
+max_pois: 6
+dimensions: [40, 40]
+horizon: 120
+observation_mode: research
+spawn_jitter: 0.35
+rovers:
+  - {start: [16, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [17, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [18, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [19, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [20, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [21, 17], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [16, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [17, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [18, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [19, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [20, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+  - {start: [21, 20], speed: 1.0, sensor_radius: 18, sensors: 4}
+pois:
+  - {position: [5, 6], radius: 3.0, coupling: 3, value: 2.2, window: [0, 119], repeat: true}
+  - {position: [33, 6], radius: 3.0, coupling: 2, value: 1.8, window: [0, 119], repeat: true}
+  - {position: [7, 33], radius: 3.0, coupling: 2, value: 1.8, window: [0, 119], repeat: true}
+  - {position: [33, 32], radius: 3.0, coupling: 2, value: 2.5, window: [0, 119], repeat: true}
+  - {position: [19, 34], radius: 2.8, coupling: 1, value: 5, window: [25, 98], repeat: false}
+  - {position: [20, 6], radius: 2.8, coupling: 1, value: 4, window: [8, 72], repeat: false}
+# Pre-action events; entries are disclosed only after their detection delays.
+events:
+  - {step: 18, kind: temporary_disable, rover: 0, duration: 9, detection_delay: 1}
+  - {step: 31, kind: capability_degradation, rover: 3, speed_factor: 0.60, sensor_factor: 0.8, detection_delay: 1}
+  - {step: 40, kind: permanent_failure, rover: 5, detection_delay: 2}
+  - {step: 54, kind: replacement_agent, rover: 7, new_slot: 12, spawn: [18, 19], detection_delay: 1}
+  - {step: 63, kind: temporary_disable, rover: 9, duration: 8, detection_delay: 2}
+  - {step: 82, kind: replacement_agent, rover: 11, new_slot: 13, spawn: [19, 19], detection_delay: 2}
+  - {step: 96, kind: capability_degradation, rover: 6, speed_factor: 0.50, sensor_factor: 0.75, detection_delay: 0}
+  - {step: 108, kind: temporary_disable, rover: 2, duration: 6, detection_delay: 1}

@@ -1,0 +1,41 @@
+{
+  "format": "dart-marl-actor-example-v1",
+  "source": "trained MAPPO checkpoints; deterministic actor-only exports, each with auditable original identity",
+  "models": [
+    {
+      "file": "fault_robust_seed_202.pt",
+      "seed": 202,
+      "training_update": 56,
+      "training_steps": 28672,
+      "original_checkpoint_sha256": "144da97eeaac07b2402c726ed9a7fad2b8553b0d0f7398480d4d124140ecd325",
+      "exported_actor_sha256": "d1fd3bb352bc26eb775d24f7a213adf35d869a3166939e5856fdc9bb9bc2dea4",
+      "training_environment_sha256": "c48ada00793297427aad9fe0a5c1bb76c4b51ab1eeff3a1f377abba7eefaf491",
+      "actor_only": true,
+      "weights_only_loadable": true
+    },
+    {
+      "file": "fault_robust_seed_404.pt",
+      "seed": 404,
+      "training_update": 40,
+      "training_steps": 20480,
+      "original_checkpoint_sha256": "bb4ff77e3886d9f358d702e0c982f3a1ba112a3d0a88197f85c05b71f664bd33",
+      "exported_actor_sha256": "c9174643e041d63819904673456b0affeb9c544b4d025045a89a29fb3cf689c9",
+      "training_environment_sha256": "c48ada00793297427aad9fe0a5c1bb76c4b51ab1eeff3a1f377abba7eefaf491",
+      "actor_only": true,
+      "weights_only_loadable": true
+    },
+    {
+      "file": "team12_seed_314159.pt",
+      "seed": 314159,
+      "training_update": 256,
+      "training_steps": 131072,
+      "original_checkpoint_sha256": "0b752e3b71b7f2d095634083ada14af7e7d10478aea68a5fab96765ac5d9e50b",
+      "exported_actor_sha256": "3da577fe8c8813dde8fa7d994bce2738401db9705ac808235fb18a2c14e93b03",
+      "training_environment_sha256": "cdbb6eac940d798e539e131e3b37ce18aaf935d38dcfa1c66e21e1282e613241",
+      "actor_only": true,
+      "weights_only_loadable": true,
+      "training_observations": "12 initially active rovers, 14 agent slots, 6 POIs, horizon 120",
+      "purpose": "real-policy paired demo and evaluation, not PPO training resume"
+    }
+  ]
+}

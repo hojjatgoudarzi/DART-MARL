@@ -1,0 +1,18 @@
+schema_version: 1
+name: learning_sanity
+# Small dense-reward diagnostic: intentionally easy enough to catch a broken
+# training loop; NOT a competitive research benchmark or a DART experiment.
+dimensions: [20, 20]
+horizon: 24
+max_agents: 12
+max_pois: 6
+observation_mode: research
+spawn_jitter: 0.15
+rovers:
+  - {start: [5, 5], speed: 1, sensor_radius: 12, sensors: 4}
+  - {start: [5.5, 5], speed: 1, sensor_radius: 12, sensors: 4}
+  - {start: [15, 15], speed: 1, sensor_radius: 12, sensors: 4}
+  - {start: [15.5, 15], speed: 1, sensor_radius: 12, sensors: 4}
+pois:
+  - {position: [5, 5], radius: 2.5, coupling: 2, window: [0, 23], value: 1, repeat: true}
+  - {position: [15, 15], radius: 2.5, coupling: 2, window: [0, 23], value: 1, repeat: true}
