@@ -1,194 +1,150 @@
-<div align="center">
+# HR-MAPPO: Decentralized Rover Task Selection
 
-# DART-MARL
+**Standalone research code** for *Hierarchical Recurrent Multi-Agent PPO* in the 12-rover cooperative task domain. This repository has **no dependency on the legacy DART-MARL allocator or guided movement MAPPO**. It is suitable for a separate GitHub branch/repository.
 
-### Disruption-Aware Role Transfer for Resilient Multi-Agent Reinforcement Learning
+> **Research status (16 November 2026):** task allocation and coupled physical service are learned, but **failure-triggered, causally demonstrated coalition reassignment has NOT been shown**. Do not claim that our policies have learned robust active failure recovery. See [Results and limitations](docs/RESULTS_AND_LIMITATIONS.md).
 
-**A reproducible cooperative rover-team environment, trained MAPPO actor, and fault-aware role-allocation benchmark.**
-
-[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-</div>
-
-![Switch-Aware versus Fixed, real trained-policy trajectories](media/rover_reallocation_vs_fixed_12.gif)
-
-*Real 12-rover simulation: **Switch-Aware** (left) versus **Fixed roles** (right). Both panels use the **same trained actor, initial conditions, and fault schedule**. Only the allocation method changes. Display interpolation is not additional policy execution. One illustrative episode (returns 786.7 vs. 639.5), not an independent-seed statistical claim.*
-
-## Overview
-
-DART-MARL studies how cooperative teams of heterogeneous rovers respond to failures, delayed failure reports, capability changes, agent re-entry, and replacement. It combines a continuous 2D multi-rover environment, an explicitly role-guided MAPPO actor, and a family of role allocators. Each POI must be physically serviced by a capable coalition; changing a role label alone earns **no reward**.
-
-The repository contains **reproducible code, trained actor exports, actual GIF/MP4 trajectories, raw results, vector figures, LaTeX tables, and integrity manifests**. It is suitable as a course-project implementation and experimental report. The evidence **does not establish superiority of original R-CART** over the Switch-Aware baseline.
-
-## Video demonstrations
-
-**Both included animations are 12-rover demonstrations.** The historical six-rover evaluation remains available as numerical data and reproducible code, but its older short videos are intentionally excluded to avoid confusion.
-
-
-| Paired experiment | Animation | Video | Interpretation |
-|---|---|---|---|
-| **12 rovers: Switch-Aware vs. Fixed** | [GIF](media/rover_reallocation_vs_fixed_12.gif) | [MP4](media/rover_reallocation_vs_fixed_12.mp4) | Reallocation benefit in one example; 786.7 vs. 639.5 return |
-| **12 rovers: Switch-Aware vs. original R-CART** | [GIF](media/rover_recovery_12.gif) | [MP4](media/rover_recovery_12.mp4) | Both achieve 786.7 in this selected episode; differences in some roles, not service |
-
-The two **12-rover** demonstrations have 120 simulation decisions, ~89.5-second GIFs and ~91.9-second MP4 files. They show **12 initially active rovers, two reserved replacement slots, eight explicit disruptions and three automatic reentries**. Rovers can be disabled, so the active population need not remain 12. All motions are from one actor evaluation per simulation decision; intermediate frames only smooth playback. See [demo details](docs/DEMO.md).
-
-## Main results
-
-**Twelve-rover study:** One complete controller training run (seed `314159`, 131,072 environment steps), evaluated on **8 paired environmental episodes** using the same frozen actor. These are **descriptive** episode means, **not** training-seed confidence intervals.
-
-| Allocator | Team return, mean | Role switches, mean |
-|---|---:|---:|
-| Fixed | 582.700 | 0.000 |
-| Greedy | **778.575** | 13.875 |
-| Switch-Aware | **778.575** | 12.625 |
-| Original R-CART | 715.750 | 10.250 |
-| R-CART No-Sync | 778.425 | 10.625 |
-| R-CART No-Switch | 678.250 | 13.375 |
-| R-CART No-Hysteresis | 727.150 | 13.625 |
-| R-CART Bounded-Sync | 778.425 | 10.625 |
-| R-CART Service-Aware | 778.425 | 10.625 |
-
-![Nine-method, twelve-rover matched evaluation (six panels)](results/team12/paper_figures/allocator_comparison_2x3.png)
-
-*Eight paired episodes of **one** frozen controller; the displayed episode
-variation is descriptive, not uncertainty across independently trained policies.*
-
-The navigation-guided controller already performed well *before* PPO optimization: nominal mean team return was **890.075 initially** versus **888.600 in the final nominal evaluation** (on the configured validation episodes). The final PPO value explained variance was **~0.829**, but these results **do not demonstrate an improvement in team reward due to PPO**. The actor includes an **engineered navigation prior** and must not be described as learning navigation from scratch.
-
-**Independent-seed historical study:** The separate **six-rover held-out evaluation** uses 10 independently trained fault-robust controllers: Switch-Aware **93.540** vs. original R-CART **91.418**, paired difference **-2.123**, with controller-level bootstrap interval approximately **[-5.160, +0.352]**. R-CART superiority was **not established**. The six- and twelve-rover raw returns have different scales and **must not be pooled**.
-
-[Historical six-rover comparison (10 independent controllers per variant; PNG)](results/team12/paper_figures/historical_controller_pairs.png) · [vector PDF](results/team12/paper_figures/historical_controller_pairs.pdf)
-
-The historical figure is **supplementary** and uses a different environment
-and reward scale. It must not be pooled with the twelve-rover evaluation.
-
-### Publication-grade multi-panel paper figures
-
-**Preliminary training diagnostics** (blue curves, one twelve-rover training
-seed) are retained for the paper. The critic's improvement must **not** be
-read as proof of better task returns.
-
-![Training dynamics and critic diagnostics (six panels)](results/team12/paper_figures/training_overview_2x3.png)
-
-**Primary paper figures:**
-[training / critic](results/team12/paper_figures/training_overview_2x3.pdf) ·
-[allocator comparison](results/team12/paper_figures/allocator_comparison_2x3.pdf) ·
-[recovery timeline](results/team12/paper_figures/recovery_timeline_2x3.pdf) ·
-[historical controller pairs](results/team12/paper_figures/historical_controller_pairs.pdf).
-The first three describe the twelve-rover study; the last is a **separate
-historical six-rover study**. More detailed plots in
-[`results/team12/figures`](results/team12/figures/) support the supplementary
-analysis and manifest-checked reproducibility, so they are intentionally
-retained rather than deleting experiment evidence.
-
-The four figures are reproducibly generated **only from recorded data**, in
-PNG, PDF, and SVG, with paired-episode CSV, LaTeX summary, captions and
-source checksums. This adds **no new training** and makes no unsupported
-statistical claim. See [publication figure suite](docs/PUBLICATION_FIGURES.md).
-
-```bash
-python scripts/make_publication_figures.py \
-  --source results/team12 --out outputs/new_paper_figures
-```
-
-Full discussion: [12-rover findings](docs/RESULTS_12_ROVERS.md) · [original held-out study](docs/RESULTS.md) · [paper asset guide](docs/PAPER_ASSETS.md) · [multi-panel figures](docs/PUBLICATION_FIGURES.md).
-
-## Quick start
-
-Requires **Python 3.12+**. On Fedora or Ubuntu, install FFmpeg to render MP4. CUDA is optional; the included deterministic demos and tests run on CPU.
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev,train,plots,demo]'
-python -m pytest -q
-```
-
-**Recreate the 12-rover dynamic-vs-fixed demonstration** from the published, *actor-only* checkpoint, without downloading a full training snapshot. Running `python scripts/make_demo.py` with no flags now uses this 12-rover setup and writes to ignored `outputs/` files (never overwrites tracked media):
-
-```bash
-python scripts/make_demo.py \
-  --checkpoint examples/checkpoints/team12_seed_314159.pt \
-  --training-env-config configs/env/rover_team_12.yaml \
-  --env-config configs/env/rover_team_12_showcase.yaml \
-  --compare fixed --seed 901110 \
-  --interpolation 4 --event-hold 4 --frame-ms 175 \
-  --out outputs/demo_fixed.gif \
-  --mp4 outputs/demo_fixed.mp4 \
-  --trace outputs/demo_fixed_trace.json
-```
-
-For the same-episode **Switch-Aware vs. original R-CART** comparison, change `--compare fixed` to `--compare r_cart`. Run `python scripts/make_demo.py --help` for playback settings.
-
-**Recompute the reported paired allocator experiment** with the bundled 12-rover actor:
-
-```bash
-python -m dart_marl evaluate-allocators \
-  --env-config configs/env/rover_team_12_showcase.yaml \
-  --controller checkpoint \
-  --checkpoint examples/checkpoints/team12_seed_314159.pt \
-  --training-env-config configs/env/rover_team_12.yaml \
-  --methods fixed greedy switch_aware r_cart r_cart_no_sync \
-            r_cart_no_switch r_cart_no_hysteresis \
-            r_cart_bounded_sync r_cart_service \
-  --episodes 8 --seed 901110 --device cpu \
-  --out outputs/replication_12
-```
-
-Reevaluation across all nine methods is **CPU-intensive**. If rerunning the full workflow from new local training, use [the resumable evaluation pipeline](docs/TWELVE_ROVER_WORKFLOW.md).
-
-**Regenerate publication figures and LaTeX tables** from the included raw source data:
-
-```bash
-python scripts/make_paper_assets.py \
-  --training results/team12/data \
-  --evaluation results/team12/data/allocator_report.json \
-  --trace media/rover_recovery_12_trace.json \
-  --historical-csv results/heldout_episode_returns.csv \
-  --out outputs/reproduced_paper_assets
-```
-
-Each plotted input and output is hashed in the generated `manifest.json`. The supplied final paper figures are under [`results/team12/figures`](results/team12/figures/) in PNG, vector PDF, and SVG; tables are under [`results/team12/tables`](results/team12/tables/).
-
-## Re-train on 12 rovers
-
-```bash
-python -m dart_marl train \
-  --config configs/train/mappo_12_rovers.yaml \
-  --out outputs/team12_training
-bash scripts/build_final_artifacts.sh \
-  outputs/team12_training outputs/team12_publication
-```
-
-The included `examples/checkpoints/team12_seed_314159.pt` is an **actor-only evaluation export** with bit-identical actor tensors to the completed user-provided checkpoint. It has no optimizer or collector state and **cannot resume PPO**. To resume your own training, preserve your locally generated full `checkpoints/latest.pt` and use the documented resume command. The recorded evaluation and demo were produced with the original full checkpoint: its SHA-256 differs from the actor-only export because non-actor state has been removed. Both identities are recorded in [`results/team12/provenance.json`](results/team12/provenance.json).
-
-## Layout
+## Architecture (what actually runs)
 
 ```text
-DART-MARL/
-├── configs/                # Environments, training settings, study protocols
-├── src/dart_marl/          # Rover mechanics, MAPPO, allocation, recovery, CFT
-├── scripts/                # Reproducible demo, evaluation, tables and figures
-├── tests/                  # Regression and provenance tests
-├── examples/checkpoints/  # Verified actor-only exports (6- and 12-rover)
-├── media/                 # Real-policy GIF/MP4 demos + raw traces
-├── results/               # Historical independent-seed and new 12-rover data
-└── docs/                  # Methods, limitations, reproducibility, workflows
+Public task map + own state + sensed neighbors + delayed local reports
+                       |
+             shared MLP task/entity encoders
+                       |
+            per-rover GRU hidden state
+                       |
+            masked categorical task head
+                    POI 0..5 / IDLE
+                       |
+          deterministic local goal controller
+                       |
+       physical service, coupling, skills, faults
+                       |
+         on-policy trajectory + macro rewards
+                       |
+      recurrent PPO + centralized team-value GRU
+            (critic used for training only)
 ```
 
-[Architecture](docs/ARCHITECTURE.md) · [Results and limitations](docs/RESULTS.md) · [12-rover results](docs/RESULTS_12_ROVERS.md) · [Demo](docs/DEMO.md) · [Reproducibility](docs/REPRODUCIBILITY.md) · [Training workflow](docs/TWELVE_ROVER_WORKFLOW.md)
+- **12 initially active rovers + 2 reserve slots**, 6 POIs, 120 physical steps/episode; variable activity masks for agent loss and recurrent state.
+- Actor is parameter-shared. Inputs contain **no central allocator output** and **no hidden remote failures**. Each rover has its own GRU state.
+- The centralized critic pools masked rover/POI state in **training only**. Shared physical service reward is not multiplied by rover count.
+- Synchronous or asynchronous per-rover decisions; correct duration-aware macro GAE, recurrent sequence training with configurable chunking and burn-in.
+- `declared` service attribution: a rover contributes only when it **chose** that POI, is active and skill-compatible, and physically lies within its radius. `IDLE` cannot earn service reward.
+- Optional delayed, range-limited, droppable local status messages; optional physically grounded shaping/credit and overstaffing penalties for **controlled ablations**.
+- The deterministic low-level navigator is shared across learned and local heuristic methods to isolate **task selection**.
 
-## Scientific and software boundaries
+## Install
 
-- The controller is MAPPO **with an engineered role-navigation prior**, not unmodified vanilla MAPPO.
-- Team reward requires **physical** POI coalition service. Assignment itself has no direct reward.
-- The allocator receives the roster and physical telemetry defined by this simulator; do **not** claim a purely decentralized allocator or hidden-state-free fault inference.
-- Eight paired **environment episodes on one trained controller** are not eight independent policy-training seeds. No 12-rover training-seed confidence interval is claimed.
-- Original R-CART **underperforms** a simpler baseline in this 12-rover study, while some of its ablations approximately tie that baseline.
-- The six-rover held-out results are already examined and are **not fresh blind confirmation** of subsequently adjusted methods.
-- No result here establishes universal R-CART superiority; the project is a reproducible class and research exploration, **not** a validated AAMAS-level performance claim.
+Requires **Python 3.12+** and **PyTorch 2.4+**. Recommended: a separate Python/Conda environment. From this repository's root:
 
-## License and attribution
+```bash
+python -m pip install -e '.[dev,plots]'
+python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
+bash scripts/validate.sh
+```
 
-MIT, see [LICENSE](LICENSE). Citation metadata and authors appear in [CITATION.cff](CITATION.cff). Rover Domain mechanics were adapted and expanded with the instructor's permission; upstream attribution and redistribution rights should be reviewed if upstream code is separately re-published.
+For `device: cuda`, install a CUDA-enabled PyTorch build according to [official PyTorch installation guidance](https://pytorch.org/get-started/locally/) first. A requested CUDA device **fails clearly** if unavailable; there is no silent CPU fallback. The PyTorch actor/critic and PPO use CUDA, while the NumPy physical simulator and task orchestration currently run on CPU. GPU utilization is not guaranteed to remain high because of environment/launch overhead.
+
+### 1. Fast local correctness smoke test
+
+```bash
+bash scripts/smoke.sh
+```
+
+Runs focused regression tests, **one** CPU PPO update, saves a checkpoint, and evaluates one episode. This is **not evidence of learned coordination**.
+
+### 2. Main 12-rover CUDA pilot
+
+```bash
+bash scripts/train.sh configs/pilot_cuda.yaml outputs/pilot_101
+```
+
+The configured default is **pure team reward** (the strongest exploratory arm so far). Each PPO update is printed to the terminal and saved in `outputs/pilot_101/terminal.log`. To change the training seed, **copy the YAML** and edit `seed` before training. Changing the YAML between checkpoint/resume steps is not supported. **Use a fresh output directory for each new run**; training refuses to overwrite an existing history/checkpoint without explicit resume.
+
+The main config runs **160 PPO updates** with six environments per update, a fixed five-stage curriculum, and local communication. It can require substantial compute. The demo and pilot retain the same actor/critic as full runs; only training budget and source of evidence differ.
+
+### 3. Matched local baselines and induced-failure stress tests
+
+```bash
+bash scripts/evaluate.sh \
+    outputs/pilot_101/best_checkpoint.pt \
+    configs/pilot_cuda.yaml \
+    outputs/pilot_101/evaluation
+```
+
+If `best_checkpoint.pt` is absent, investigate the curriculum/development selection; for software debugging only you may explicitly substitute `checkpoint.pt`. Do not silently treat final and best weights as interchangeable.
+
+This evaluates learned Actor alongside untrained, Always-IDLE, random, nearest, static and other local heuristics under the **same environment seeds**. The stress cut is **policy-conditioned** and therefore a diagnostic of repair, **not a fair ranking by return** between policies.
+
+### 4. Optional independent seeds
+
+```bash
+bash scripts/multiseed.sh configs/study_cuda.yaml outputs/team_reward_study
+```
+
+Starts **three separate trainings** with seeds 101, 202, 303. This can be computationally expensive; use only after a small causal-repair gate. This repo deliberately **does not** claim the next few seeds will demonstrate recovery.
+
+### 5. Plot actual logged learning curves
+
+```bash
+python scripts/plot.py --runs \
+    outputs/team_reward_study/seed_101/train_history.jsonl \
+    outputs/team_reward_study/seed_202/train_history.jsonl \
+    outputs/team_reward_study/seed_303/train_history.jsonl \
+    --output outputs/team_reward_study/learning.png
+```
+
+## Outputs
+
+| File | Description |
+|---|---|
+| `terminal.log` | Real-time updates, current stage, raw return, entropy, surplus, recovery and throughput |
+| `train_history.jsonl` | Every PPO update: losses, entropy/KL, decision counts, curriculum gates, service/recovery metrics |
+| `checkpoint.pt` | **Final** resumable actor/critic + optimizer + RNG + configuration |
+| `best_checkpoint.pt` | Development-selected checkpoint during final curriculum stage, when eligible |
+| `actor_only.pt`, `best_actor_only.pt` | Optional actor exports; do not mistake for resumable training states |
+| `manifest.json`, `input_hashes.txt` | Seeds, parameters, platform, config/environment integrity hashes |
+| `research_readiness.json`, `best_development.json` | Status and frozen development checkpoint-selection rule |
+| `evaluation/matched/*_episodes.csv` | Paired environment-seed physical returns for local selectors |
+| `evaluation/matched/*_seed_*_metrics.json` | Coupled service, staffing, one-shots, fault/recovery events |
+| `evaluation/stress_cut/intervention_summary.json` | Feasible cuts, **actual drops** and conditional recoveries; null if no opportunity |
+| `evaluation/summary.json` | Small human-readable index of actual evaluation means |
+
+All `outputs/` data are ignored by Git. **No private trained checkpoints or prior experimental result artifacts are bundled in this source-only branch.** The code can read prior model state dictionaries with matching shapes/configuration, but the standalone run itself starts with fresh weights.
+
+## Repository layout
+
+```text
+configs/                  # only three training presets + standalone 12-rover environment
+src/hr_mappo/
+  models.py               # parameter-shared task-conditioned MLP-GRU actor; pooled team critic
+  observations.py         # local execution-information firewall and training-only critic input
+  communication.py        # local status signal constraints
+  scheduler.py            # synchronous / asynchronous decision clock
+  rollout.py, gae.py      # physical trajectories, macro transitions, discounting and GRU lifecycle
+  ppo.py                  # recurrent clipped PPO optimizer
+  experiment.py           # seed/config, training, evaluation, checkpoint/resume, console logs
+  physics.py, control.py  # declared task service and common deterministic navigation
+  scenarios*.py           # seeded environment/task/fault distributions
+  interventions.py       # induced stress cuts; diagnostics, never deployed oracle
+  recovery_diagnostic.py  # optional centralized feasibility witness (research-only)
+  baselines.py, metrics.py, curriculum.py
+  envs/, disruptions/    # minimal retained rover physics and event types
+scripts/                  # train, evaluate, validate, smoke, multiseed, plotting and stress
+  compare.py, stress.py, diagnose.py
+  train.sh, evaluate.sh, validate.sh, smoke.sh, multiseed.sh
+  plot.py, summarize.py
+tests/                    # 74 HR-only regression and training correctness tests
+docs/                     # methods, results, extraction validation and next investigation
+```
+
+## Scientific boundaries
+
+**Do not confuse:** physical service recovery with policy **reassignment caused by failure**. Our latest paired fault/no-fault analysis found 8 physical restorations among 15 stress cases but **zero effective fault-induced assignments to the damaged POI**. See [Results and limitations](docs/RESULTS_AND_LIMITATIONS.md). We have not opened the final sealed held-out split for model selection.
+
+For the **next research step**, perform a tiny, controlled feasible-repair task first. Keep the architecture fixed and require the Actor to make a different, correct POI choice after a *locally observable* disruption. The next experiment has **not** been implemented or run as part of this cleanup; this repository freezes the current code so you can compare against a future branch.
+
+## License & attribution
+
+MIT License; retains the rover-domain / HR-MAPPO research team's original contributions and simulator lineage. This repository is a **clean extraction**, not a claim of a new algorithm or new benchmark results. Cite the underlying project and baseline papers appropriately in a publication.

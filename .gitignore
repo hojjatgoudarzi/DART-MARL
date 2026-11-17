@@ -1,34 +1,15 @@
-# Python, editors and virtual environments
+# Outputs never belong in source control
+outputs/
+experiments/
+*.pt
+*.pth
+*.ckpt
+*.tar.gz
+.venv/
 __pycache__/
-*.py[cod]
-*.egg-info/
 .pytest_cache/
 .ruff_cache/
-.mypy_cache/
-.coverage
-.venv/
-.env
-.idea/
-.vscode/
+*.egg-info/
+dist/
+build/
 .DS_Store
-
-# Experiment outputs / training caches: these can be extremely large.
-outputs/
-runs/
-/checkpoints/
-*.npz
-*.pth
-*.zip
-
-# Model weights and videos are excluded globally except the small, audited examples.
-*.pt
-*.mp4
-*.gif
-!examples/checkpoints/*.pt
-!media/*.gif
-!media/*.mp4
-
-# User-created scripts, personal paths and GPU logs must stay outside the repository.
-*.log
-*.bak
-*.swp

@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-python --version
-python -m pytest -q
-python -m compileall -q src scripts
-python -m dart_marl inspect --config configs/env/dev_roles.yaml
-python -m dart_marl inspect --config configs/env/professor_parity.yaml
-python -m dart_marl inspect --config configs/env/rover_team_12_showcase.yaml
-printf '\nValidation passed. Full multi-seed training is intentionally not part of this quick check.\n'
+export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+python -m compileall -q src/hr_mappo
+python -m pytest -q tests/test_core.py tests/test_credit_efficiency.py
+printf '\nStandalone HR-MAPPO core validation passed. Run python -m pytest -q tests for extended tests.\n'
