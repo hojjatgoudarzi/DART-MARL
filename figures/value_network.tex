@@ -1,0 +1,46 @@
+% Value network (centralized, training only). Needs \usepackage{amsmath, tikz} and \usetikzlibrary{arrows.meta, fit, backgrounds}.
+\begin{tikzpicture}[
+    every node/.style={font=\small},
+    box/.style={draw=black!60, rounded corners=2pt, align=center},
+    arr/.style={-{Stealth[length=2mm]}, thick},
+    main/.style={box, text width=4.3cm, minimum height=0.75cm},
+    sum/.style={circle, draw=black!60, fill=white, inner sep=0pt, minimum size=5mm},
+    half/.style={box, text width=1.8cm, minimum height=0.75cm},
+]
+    % inputs: the whole team and every POI, with absolute positions
+    \node[half, fill=teal!12] (rov) at (-1.12, 0) {Rovers\\ $(v_j, p_j)$};
+    \node[half, fill=orange!12] (poi) at (1.12, 0) {POIs\\ $(q_k, p_k)$};
+    \node[half, fill=teal!25] (renc) at (-1.12, -1.3) {Rover MLP};
+    \node[half, fill=orange!25] (penc) at (1.12, -1.3) {POI MLP};
+    \draw[arr] (rov) -- (renc);
+    \draw[arr] (poi) -- (penc);
+
+    % main column: every token together
+    \node[main, fill=white] (tok) at (0, -2.6) {Tokens: all rovers and POIs};
+    \node[main, fill=white] (ln1) at (0, -3.9) {LayerNorm};
+    \node[main, fill=orange!18] (att) at (0, -5.2) {Self-Attention};
+    \node[sum] (add1) at (0, -6.5) {$+$};
+    \node[main, fill=white] (ln2) at (0, -7.8) {LayerNorm};
+    \node[main, fill=blue!12] (mlp) at (0, -9.1) {MLP $d \to 4d \to d$};
+    \node[sum] (add2) at (0, -10.4) {$+$};
+    \node[main, fill=green!12] (head) at (0, -11.9) {Value head (rover tokens)};
+
+    \draw[arr] (renc) -- (renc |- tok.north);
+    \draw[arr] (penc) -- (penc |- tok.north);
+    \foreach \u/\v in {tok/ln1, ln1/att, att/add1, add1/ln2, ln2/mlp, mlp/add2, add2/head} \draw[arr] (\u) -- (\v);
+    \draw[arr] (head.south) -- ++(0, -0.5) node[below] {$V_1, \dots, V_A$: one value per rover};
+
+    % notes on the attention
+    \node[anchor=west, font=\scriptsize, text=black!60, align=left] at ([xshift=6mm]att.east) {every token attends to every other:\\ no communication limit,\\ failed rovers masked};
+
+    % L stacked blocks
+    \coordinate (res) at (-2.8, -3.25);
+    \begin{scope}[on background layer]
+        \node[draw=black!30, dashed, rounded corners=4pt, fit=(res)(ln1)(add2), inner sep=2.5mm] (blocks) {};
+    \end{scope}
+    \node[anchor=north west, font=\footnotesize, text=black!60] at (blocks.north east) {$\times L$};
+
+    % residual connections
+    \draw[arr, gray] (0, -3.25) -- (-2.8, -3.25) |- (add1.west);
+    \draw[arr, gray] (0, -7.15) -- (-2.8, -7.15) |- (add2.west);
+\end{tikzpicture}

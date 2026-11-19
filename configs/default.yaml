@@ -1,0 +1,24 @@
+# Twelve rovers serve six POIs. A POI pays only while enough rovers are physically inside its radius.
+# Rovers fail permanently during an episode; how many, and how they are picked (random or
+# adversarial), are training / evaluation arguments (see train.py and evaluate.py).
+name: default
+
+
+# ---------------------------------------------------------------------------------------------
+# World
+# ---------------------------------------------------------------------------------------------
+dimensions: [40, 40]
+horizon: 120
+rovers: 12
+speed: 1.0               # map units per step
+fault_margin: 4          # no failures in the first or last `fault_margin` steps
+
+# coupling: rovers needed at once. window: [first, last] step it can be served.
+# repeat: pays every step it is served (true) or only once (false).
+pois:
+  - {position: [5, 6],   radius: 3.0, coupling: 3, value: 2.2, window: [0, 119],  repeat: true}
+  - {position: [33, 6],  radius: 3.0, coupling: 2, value: 1.8, window: [0, 119],  repeat: true}
+  - {position: [7, 33],  radius: 3.0, coupling: 2, value: 1.8, window: [0, 119],  repeat: true}
+  - {position: [33, 32], radius: 3.0, coupling: 2, value: 2.5, window: [0, 119],  repeat: true}
+  - {position: [19, 34], radius: 2.8, coupling: 1, value: 5,   window: [25, 98],  repeat: false}
+  - {position: [20, 6],  radius: 2.8, coupling: 1, value: 4,   window: [8, 72],   repeat: false}

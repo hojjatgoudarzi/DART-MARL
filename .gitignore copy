@@ -1,0 +1,6 @@
+/checkpoints
+/wandb
+
+slurm*
+__pycache__/
+.venv/
